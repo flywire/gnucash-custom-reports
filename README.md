@@ -1,4 +1,4 @@
-# Custom Reports for GnuCash 5.x
+# Custom Reports for GnuCash 5.16
 
   * [Introduction](#introduction)
   * [Installation](#installation)
@@ -6,13 +6,13 @@
 
 ## Introduction
 
-This is repository contains a series of custom reports for GnuCash 5.x.
+This is repository contains a series of custom reports for GnuCash 5.16.
 
 ### Transaction Report Extended
 
 **Filename**: transaction-extended.scm
 
-**Description**: Based on the built-in transaction report (now as of version 5.6), it provides these additional features:
+**Description**: Based on the built-in transaction report (now as of version 5.16), it provides these additional features:
 + a Sort by Substring option which includes a regular expression match similar to the one offered for the transaction filter. That feature is the generic version of the Transaction Report with Tags.
 + a new option on the display tab called "Use More Permissive Match for Other Account Name and Code". This option enables a more permissive match for the other account name and code in order to reduce the number of "split transaction" account names with multisplits.
 
