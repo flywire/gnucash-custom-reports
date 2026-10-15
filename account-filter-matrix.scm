@@ -318,14 +318,6 @@
         (if has-filter? (list (bold-number-cell grand-ot #f)) '())
         (list (bold-number-cell grand-tt #f)))))
 
-    ;; Footer Layout Elements
-    (gnc:html-document-add-object!
-     document
-     (gnc:make-html-text
-      "<p style=\"margin-top: 10px; font-style: italic; color: red; font-size: 12px;\">"
-      "Caution - AI Generated concept with minimal verification."
-      "</p>"))
-
     (gnc:html-document-add-object! document table)
     document))
 
