@@ -235,7 +235,7 @@
           (end-str   (if end-date   (qof-print-date end-date)   #f)))
       (gnc:html-document-add-object! document
         (gnc:make-html-text
-         (format #f "<p style=\"font-weight: bold; margin-bottom: 5px;\">Period: ~a</p><p style=\"font-style: italic; margin-bottom: 15px;\">Active Filter Token: ~a</p>"
+         (format #f "<p style=\"font-weight: bold; margin-bottom: 5px;\">Period: ~a</p><p style=\"font-style: italic; margin-bottom: 15px;\">Filter Text: ~a</p>"
                  (cond ((and start-str end-str) (format #f "~a to ~a" start-str end-str))
                        (start-str (format #f "From ~a onwards" start-str))
                        (end-str   (format #f "Up to ~a" end-str))
