@@ -134,10 +134,14 @@
     (xaccPrintAmount value print-info)))
 
 (define (number-cell value commodity)
-  (gnc:make-html-table-cell/markup "number-cell" (format-gnc-numeric value commodity)))
+  (if (gnc-numeric-zero-p value)
+      (gnc:make-html-table-cell/markup "number-cell" "")
+      (gnc:make-html-table-cell/markup "number-cell" (format-gnc-numeric value commodity))))
 
 (define (bold-number-cell value commodity)
-  (gnc:make-html-table-cell/markup "total-number-cell" (format-gnc-numeric value commodity)))
+  (if (gnc-numeric-zero-p value)
+      (gnc:make-html-table-cell/markup "total-number-cell" "")
+      (gnc:make-html-table-cell/markup "total-number-cell" (format-gnc-numeric value commodity))))
 
 (define (text-cell value)
   (gnc:make-html-table-cell/markup "text-cell" value))
