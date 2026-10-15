@@ -130,7 +130,7 @@
 
 (define (format-gnc-numeric value commodity)
   (let* ((actual-commodity (if commodity commodity (gnc-default-currency)))
-         (print-info (gnc-default-print-info actual-commodity)))
+         (print-info (gnc-commodity-print-info actual-commodity #f)))
     (xaccPrintAmount value print-info)))
 
 (define (number-cell value commodity)
