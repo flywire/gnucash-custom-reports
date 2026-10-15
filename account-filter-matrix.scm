@@ -267,21 +267,25 @@
                  (if has-filter? (list (empty-cell)) '())
                  (list (empty-cell))))
 
-               ;; Record Mapping Generation
+               ;; Record Mapping Generation (Only Display Rows with a Non-Zero Value)
                (for-each
                 (lambda (account)
                   (let* ((comm (xaccAccountGetCommodity account))
                          (filter-vals (map (lambda (f) (get-total account f)) active-filters))
                          (ot-val    (get-total account other))
-                         (tt-val    (get-total account #f)))
+                         (tt-val    (get-total account #f))
+                         ;; Consolidate all individual column figures in the row
+                         (all-row-vals (cons ot-val filter-vals)))
 
-                    (gnc:html-table-append-row!
-                     table
-                     (append
-                      (list (text-cell (build-full-name account)))
-                      (map (lambda (v) (number-cell v comm)) filter-vals)
-                      (if has-filter? (list (number-cell ot-val comm)) '())
-                      (list (number-cell tt-val comm))))))
+                    ;; Only output row if at least one column has a non-zero value
+                    (if (any (lambda (val) (not (gnc-numeric-zero-p val))) all-row-vals)
+                        (gnc:html-table-append-row!
+                         table
+                         (append
+                          (list (text-cell (build-full-name account)))
+                          (map (lambda (v) (number-cell v comm)) filter-vals)
+                          (if has-filter? (list (number-cell ot-val comm)) '())
+                          (list (number-cell tt-val comm)))))))
                 type-accounts)
 
                ;; Category Totals Layout
