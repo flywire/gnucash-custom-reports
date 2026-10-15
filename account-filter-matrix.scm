@@ -86,7 +86,7 @@
    ((= type-id ACCT-TYPE-LIABILITY) "LIABILITY")
    ((= type-id ACCT-TYPE-INCOME) "INCOME")
    ((= type-id ACCT-TYPE-EXPENSE) "EXPENSE")
-   (else "OTHER")))
+   (else "UNMATCHED")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Filter Classification
@@ -104,12 +104,12 @@
          (target-word (lower-case filter-word)))
 
     (if (or (string=? target-word "") (not filter-word))
-        "Other"
+        "Unmatched"
         (let* ((pattern (string-append "\\b(" (regexp-quote target-word) "[a-zA-Z0-9_-]*)"))
                (match (string-match pattern combined-text)))
           (if match
               (string-titlecase (match:substring match 1))
-              "Other")))))
+              "Unmatched")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Period Filter Match Verification
@@ -187,7 +187,7 @@
                            selected-accounts
                            (gnc-account-get-descendants root)))
 
-         (other "Other"))
+         (unmatched "Unmatched"))
 
     ;; Data Collection Engine
     (define (get-total account target-filter)
@@ -210,7 +210,7 @@
           '()
           (delete-duplicates
            (filter
-            (lambda (name) (and (not (string=? name "Other"))
+            (lambda (name) (and (not (string=? name "Unmatched"))
                                 (string-prefix-ci? filter-text name)))
             (append-map
              (lambda (acc)
@@ -248,7 +248,7 @@
      (append
       (list (header-cell "Account"))
       (map header-cell active-filters)
-      (if has-filter? (list (header-cell other)) '())
+      (if has-filter? (list (header-cell unmatched)) '())
       (list (header-cell "Total"))))
 
     ;; Map groupings across target ledger accounts
@@ -276,7 +276,7 @@
                 (lambda (account)
                   (let* ((comm (xaccAccountGetCommodity account))
                          (filter-vals (map (lambda (f) (get-total account f)) active-filters))
-                         (ot-val    (get-total account other))
+                         (ot-val    (get-total account unmatched))
                          (tt-val    (get-total account #f))
                          ;; Consolidate all individual column figures in the row
                          (all-row-vals (cons ot-val filter-vals)))
@@ -294,7 +294,7 @@
 
                ;; Category Totals Layout
                (let* ((sub-filters (map (lambda (f) (fold (lambda (a t) (gnc-numeric-add t (get-total a f) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) type-accounts)) active-filters))
-                      (sub-ot    (fold (lambda (a t) (gnc-numeric-add t (get-total a other) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) type-accounts))
+                      (sub-ot    (fold (lambda (a t) (gnc-numeric-add t (get-total a unmatched) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) type-accounts))
                       (sub-tt    (fold (lambda (a t) (gnc-numeric-add t (get-total a #f) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) type-accounts)))
                  (gnc:html-table-append-row!
                   table
@@ -307,7 +307,7 @@
 
     ;; Final Matrix Calculation Generation
     (let* ((grand-filters (map (lambda (f) (fold (lambda (a t) (gnc-numeric-add t (get-total a f) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) all-accounts)) active-filters))
-           (grand-ot    (fold (lambda (a t) (gnc-numeric-add t (get-total a other) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) all-accounts))
+           (grand-ot    (fold (lambda (a t) (gnc-numeric-add t (get-total a unmatched) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) all-accounts))
            (grand-tt    (fold (lambda (a t) (gnc-numeric-add t (get-total a #f) GNC-DENOM-AUTO GNC-HOW-RND-ROUND)) (gnc-numeric-zero) all-accounts)))
       (gnc:html-table-append-row/markup!
        table
